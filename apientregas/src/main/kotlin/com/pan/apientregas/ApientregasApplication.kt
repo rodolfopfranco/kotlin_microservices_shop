@@ -1,11 +1,11 @@
-package com.pan.apientrengas
+package com.pan.apientregas
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class ApientrengasApplication
+class ApientregasApplication
 
 fun main(args: Array<String>) {
-	runApplication<ApientrengasApplication>(*args)
+	runApplication<ApientregasApplication>(*args)
 }
