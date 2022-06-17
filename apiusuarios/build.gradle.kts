@@ -31,9 +31,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	compileOnly("org.mapstruct:mapstruct:1.5.1.Final")
 	kapt("org.mapstruct:mapstruct-processor:1.5.1.Final")
-	implementation("org.springframework.boot:spring-boot-starter-security:2.6.8")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("com.auth0:java-jwt:3.19.2")
 	implementation("org.flywaydb:flyway-core:8.5.12")
+	testImplementation("org.springframework.security:spring-security-test")
 }
 
 kapt {
