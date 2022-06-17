@@ -1,0 +1,2 @@
+INSERT INTO TB_PERFIL(id, nome) VALUES(1, 'ADMIN');
+INSERT INTO TB_USUARIO(id_usuario, ds_email, nr_idade, st_active, ds_nome, vl_senha, perfil_id) VALUES (1, 't@t.com', 1, 1, 'nome', '$2a$10$AmYsQPvT4tKKVB1odbAR3uec3XXU5/V5U5yToDZUGRO39/67wLnKu', 1);
