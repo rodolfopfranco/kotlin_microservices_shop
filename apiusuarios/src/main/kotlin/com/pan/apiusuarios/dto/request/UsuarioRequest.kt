@@ -1,6 +1,7 @@
 package com.pan.apiusuarios.dto.request
 
 import com.pan.apiusuarios.entity.Endereco
+import com.pan.apiusuarios.entity.Perfil
 import com.pan.apiusuarios.entity.Telefone
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
@@ -18,5 +19,6 @@ class UsuarioRequest(
     val senha: String,
     val isActive: Boolean,
     val enderecos: MutableList<Endereco>,
-    val telefones: MutableList<Telefone>
+    val telefones: MutableList<Telefone>,
+    val perfil: Perfil
 )
