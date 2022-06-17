@@ -6,10 +6,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException
 import com.pan.apiusuarios.dto.security.AutenticacaoDTO
 import com.pan.apiusuarios.dto.security.TokenDTO
 import com.pan.apiusuarios.entity.Usuario
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.stereotype.Service
@@ -17,7 +16,7 @@ import java.util.*
 
 @Service
 class AuthenticationService(
-    @Autowired val authManager: AuthenticationManager
+    private val authManager: AuthenticationConfiguration
 ) {
 
     @Value("\${apiusuarios.jwt.expiration}")
@@ -31,7 +30,7 @@ class AuthenticationService(
 
     @Throws(AuthenticationException::class)
     fun autenticar(authForm: AutenticacaoDTO): TokenDTO {
-        val authenticate: Authentication = authManager.authenticate(
+        val authenticate: Authentication = authManager.authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 authForm.usuario,
                 authForm.senha
