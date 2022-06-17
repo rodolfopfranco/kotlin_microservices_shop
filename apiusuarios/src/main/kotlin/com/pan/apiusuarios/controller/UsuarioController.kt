@@ -2,11 +2,13 @@ package com.pan.apiusuarios.controller
 
 import com.pan.apiusuarios.dto.request.UsuarioRequest
 import com.pan.apiusuarios.dto.security.AutenticacaoDTO
+import com.pan.apiusuarios.dto.security.TokenDTO
 import com.pan.apiusuarios.service.AuthenticationService
 import com.pan.apiusuarios.service.UsuarioService
 import io.swagger.annotations.ApiOperation
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -53,8 +55,12 @@ class UsuarioController(
 
     @PostMapping("/login")
     @ApiOperation(value = "Authenticates User")
-    fun autenticar(@RequestBody authForm: AutenticacaoDTO){
-        ResponseEntity.ok(authenticationService.autenticar(authForm))
+    fun autenticar(@RequestBody authForm: AutenticacaoDTO): ResponseEntity<TokenDTO> {
+        try{
+            return ResponseEntity.ok(authenticationService.autenticar(authForm))
+        } catch (ae: AuthenticationException){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(TokenDTO(ae.message?: "Erro ao autenticar"))
+        }
     }
 
     @PatchMapping("/{id}/activate")

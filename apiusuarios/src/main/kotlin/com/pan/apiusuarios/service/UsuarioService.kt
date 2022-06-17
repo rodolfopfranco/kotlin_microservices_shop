@@ -6,6 +6,7 @@ import com.pan.apiusuarios.entity.Usuario
 import com.pan.apiusuarios.repository.UsuarioRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import javax.persistence.EntityNotFoundException
 
@@ -17,7 +18,12 @@ class UsuarioService(
 
     fun listarUsuarios(): List<Usuario> = usuarioRepository.findAll()
 
-    fun salvarUsuario(request: UsuarioRequest) = usuarioRepository.save(usuarioMapper.toEntity(request))
+    fun salvarUsuario(request: UsuarioRequest) {
+        val usuarioEntidade: Usuario =  usuarioMapper.toEntity(request)
+        val senhaCriptografada: String = criptografarSenha(senha = usuarioEntidade.senha)
+        usuarioEntidade.senha = senhaCriptografada
+        usuarioRepository.save(usuarioEntidade)
+    }
 
     fun encontrarPorId(id: Int){
         usuarioRepository.findById(id)
@@ -61,6 +67,11 @@ class UsuarioService(
         if(!usuarioEncontrado.isActive) throw IllegalArgumentException("Usuário já está inativo")
         usuarioEncontrado.isActive = false
         return usuarioRepository.save(usuarioEncontrado)
+    }
+
+    fun criptografarSenha(senha: String): String {
+        val bcrypEnconder = BCryptPasswordEncoder()
+        return bcrypEnconder.encode(senha)
     }
 
 }
