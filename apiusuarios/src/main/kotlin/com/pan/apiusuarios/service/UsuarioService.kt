@@ -20,25 +20,25 @@ class UsuarioService(
 
     fun listarUsuarios(): List<Usuario> = usuarioRepository.findAll()
 
-    fun salvarUsuario(request: UsuarioRequest) {
+    fun salvarUsuario(request: UsuarioRequest): Usuario {
         val usuarioEntidade: Usuario =  usuarioMapper.toEntity(request)
         val senhaCriptografada: String = criptografarSenha(senha = usuarioEntidade.senha)
         usuarioEntidade.senha = senhaCriptografada
-        usuarioRepository.save(usuarioEntidade)
+        return usuarioRepository.save(usuarioEntidade)
     }
 
-    fun encontrarPorId(id: Int){
-        usuarioRepository.findById(id)
+    fun encontrarPorId(id: Int): Usuario{
+        return usuarioRepository.findById(id)
             .orElseThrow{
                 ResourceException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
             }
     }
 
-    fun atualizarUsuario(request: UsuarioRequest, id: Int){
+    fun atualizarUsuario(request: UsuarioRequest, id: Int): Usuario{
         encontrarPorId(id)
         var usuarioParaSalvar = usuarioMapper.toEntity(request)
         usuarioParaSalvar.id = id
-        usuarioRepository.save(usuarioParaSalvar)
+        return usuarioRepository.save(usuarioParaSalvar)
     }
 
     fun removerUsuario(id: Int) {
@@ -50,12 +50,14 @@ class UsuarioService(
         }
     }
 
-    fun buscarUsuarioPorEmail(email: String) = usuarioRepository.findByEmail(email)
+    fun buscarUsuarioPorEmail(email: String): Usuario {
+        return usuarioRepository.findByEmail(email).orElseThrow(){
+            ResourceException(HttpStatus.NOT_FOUND, "Usuário não encontrado com o e-mail fornecido")
+        }
+    }
 
     override fun loadUserByUsername(username: String): UserDetails {
-            return buscarUsuarioPorEmail(username).orElseThrow{
-                ResourceException(HttpStatus.NOT_FOUND, "Usuário não encontrado com o e-mail informado")
-            }
+            return buscarUsuarioPorEmail(username)
     }
 
     fun buscarUsuarioPorId(idUsuario: Long): Usuario {
