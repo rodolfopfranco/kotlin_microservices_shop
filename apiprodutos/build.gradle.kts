@@ -5,6 +5,8 @@ plugins {
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
+	kotlin("plugin.jpa") version "1.6.21"
+	kotlin("kapt") version "1.6.10"
 }
 
 group = "com.pan"
@@ -22,6 +24,22 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	runtimeOnly("mysql:mysql-connector-java")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	runtimeOnly("com.h2database:h2")
+	testRuntimeOnly("com.h2database:h2")
+	implementation("org.springframework.boot:spring-boot-starter-validation:2.7.0")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	compileOnly("org.mapstruct:mapstruct:1.5.1.Final")
+	kapt("org.mapstruct:mapstruct-processor:1.5.1.Final")
+	kapt("org.mapstruct:mapstruct-processor:1.5.1.Final")
+	implementation("io.springfox:springfox-swagger-ui:2.9.2")
+	implementation("io.springfox:springfox-swagger2:2.9.2")
+}
+
+kapt {
+	useBuildCache = true
+	arguments {
+		arg("mapstruct.defaultComponentModel", "spring")
+	}
 }
 
 tasks.withType<KotlinCompile> {
