@@ -3,7 +3,9 @@ package com.pan.apiusuarios.service
 import com.pan.apiusuarios.dto.mapper.UsuarioMapper
 import com.pan.apiusuarios.dto.request.UsuarioRequest
 import com.pan.apiusuarios.entity.Usuario
+import com.pan.apiusuarios.exception.ResourceException
 import com.pan.apiusuarios.repository.UsuarioRepository
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -28,7 +30,7 @@ class UsuarioService(
     fun encontrarPorId(id: Int){
         usuarioRepository.findById(id)
             .orElseThrow{
-                EntityNotFoundException("Usuário não encontrado")
+                ResourceException(HttpStatus.NOT_FOUND, "Usuário não encontrado")
             }
     }
 
@@ -39,32 +41,39 @@ class UsuarioService(
         usuarioRepository.save(usuarioParaSalvar)
     }
 
-    fun removerUsuario(id: Int) = usuarioRepository.deleteById(id)
+    fun removerUsuario(id: Int) {
+        encontrarPorId(id)
+        try{
+            usuarioRepository.deleteById(id)
+        } catch (e: Exception) {
+            throw ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, e.message)
+        }
+    }
 
     fun buscarUsuarioPorEmail(email: String) = usuarioRepository.findByEmail(email)
 
     override fun loadUserByUsername(username: String): UserDetails {
             return buscarUsuarioPorEmail(username).orElseThrow{
-                EntityNotFoundException("Usuário não encontrado com o e-mail informado")
+                ResourceException(HttpStatus.NOT_FOUND, "Usuário não encontrado com o e-mail informado")
             }
     }
 
     fun buscarUsuarioPorId(idUsuario: Long): Usuario {
         return usuarioRepository.findById(idUsuario.toInt()).orElseThrow{
-            EntityNotFoundException("Usuário não encontrado com o ID informado")
+            ResourceException(HttpStatus.NOT_FOUND, "Usuário não encontrado com o ID informado")
         }
     }
 
     fun ativar(id: Int): Usuario {
         var usuarioEncontrado = buscarUsuarioPorId(id.toLong())
-        if(usuarioEncontrado.isActive) throw IllegalArgumentException("Usuário já está ativo")
+        if(usuarioEncontrado.isActive) throw ResourceException(HttpStatus.BAD_REQUEST, "Usuário já está ativo")
         usuarioEncontrado.isActive = true
         return usuarioRepository.save(usuarioEncontrado)
     }
 
     fun desativar(id: Int): Usuario {
         var usuarioEncontrado = buscarUsuarioPorId(id.toLong())
-        if(!usuarioEncontrado.isActive) throw IllegalArgumentException("Usuário já está inativo")
+        if(!usuarioEncontrado.isActive) throw ResourceException(HttpStatus.BAD_REQUEST, "Usuário já está inativo")
         usuarioEncontrado.isActive = false
         return usuarioRepository.save(usuarioEncontrado)
     }

@@ -69,5 +69,8 @@ class UsuarioController(
     @PatchMapping("/{id}/deactivate")
     fun desativar(@PathVariable id: Int) = ResponseEntity.ok(usuarioService.desativar(id))
 
+    @GetMapping("/validateToken")
+    @ApiOperation(value = "A simple request which returns 403 if not authenticated through Header, replies true otherwise")
+    fun verificarToken() = ResponseEntity.ok(true)
 
 }
