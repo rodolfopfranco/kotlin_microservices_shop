@@ -25,6 +25,7 @@ class RabbitMQService(
         val entregaString = messageConverter.fromMessage(message).toString()
         val mapper = jacksonObjectMapper()
         val entrega = mapper.readValue<Entrega>(entregaString)
+        Thread.sleep(5_000)
         entrega.idEntrega?.let { entregaService.atualizarEntrega(entrega, it) }
     }
 

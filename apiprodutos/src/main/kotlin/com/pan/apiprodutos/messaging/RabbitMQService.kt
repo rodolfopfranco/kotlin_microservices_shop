@@ -25,6 +25,7 @@ class RabbitMQService(
         val entrega = mapper.readValue<Entrega>(entregaString)
         val statusProcessamento = produtoService.reduzirEstoqueParaListaDeProdutos(entrega.produtos)
         val entregaProcessada = alteraStatusEntrega(entrega, statusProcessamento)
+        Thread.sleep(5_000)
         enviaEntregaDeVoltaComStatusAtualizado(entregaProcessada)
     }
 

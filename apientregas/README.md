@@ -29,5 +29,6 @@ use test
 <i>show collections</i><br/>
 <i>show databases</i><br/>
 <i>db.cl_entrega.find()</i><br/>
-<i>db.createUser({user: "admin",pwd: "admin",roles:["readWrite", "dbAdmin"]});</i>
+<i>db.createUser({user: "admin",pwd: "admin",roles:["readWrite", "dbAdmin"]});</i><br/>>
+<i>db.cl_entrega.remove({})</i>
 </p>
