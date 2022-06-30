@@ -37,7 +37,7 @@ class SwaggerConfig {
             .title("Api Entregas")
             .contact(Contact("Franco", "github.com", "email@email.com"))
             .version("1.0")
-            .description("Products management API")
+            .description("Deliveries management API")
             .license("Creative Commons")
             .build()
     }
