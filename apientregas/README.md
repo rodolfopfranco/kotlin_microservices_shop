@@ -10,7 +10,7 @@ http://localhost:8085/swagger-ui.html
 If you're using a Docker, these commands can be used to reproduce the og environment:<br/><br/>
 <b>Mount MongoDB Docker Container</b><br/>
 <i>
-sudo docker run --name mongo_shop -d -p 27017:27017 -p 28017:28017 -e MONGO_INITDB_ROOTPASSWORD=admin mongo:latest <br/><br/>
+sudo docker run --name mongo_shop -d -p 27017:27017 -p 28017:28017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin mongo:latest <br/><br/>
 sudo docker start mongo_shop<br/><br/>
 </i>
 <b>Set admin user:</b><br/>
@@ -20,7 +20,7 @@ sudo docker exec -it mongo_shop mongo -u "admin" -p "admin"
 <b>Access Mongo Shell (through the Docker):</b><br/>
 <i>
 sudo docker exec -it mongo_shop bash<br/>
-mongo mongo_shop<br/>
+mongo --username admin --password admin<br/>
 use test
 </i>
 
