@@ -2,7 +2,8 @@ package com.pan.apientregas.messaging
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.pan.apientregas.constant.EXCHANGEPARAPRODUTO
+import com.pan.apientregas.constant.EXCHANGE_ENTREGA
+import com.pan.apientregas.constant.KEY_PROCESSA
 import com.pan.apientregas.constant.QUEUE_ENTREGA_PROCESSADA
 import com.pan.apientregas.document.Entrega
 import com.pan.apientregas.service.EntregaService
@@ -30,6 +31,6 @@ class RabbitMQService(
     fun enviaEntrega(entrega: Entrega){
         val mapper = jacksonObjectMapper()
         val message = mapper.writeValueAsString(entrega)
-        rabbitTemplate.convertAndSend(EXCHANGEPARAPRODUTO,"", message)
+        rabbitTemplate.convertAndSend(EXCHANGE_ENTREGA, KEY_PROCESSA, message)
     }
 }

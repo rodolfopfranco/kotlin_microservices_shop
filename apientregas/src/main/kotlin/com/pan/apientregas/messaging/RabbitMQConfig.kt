@@ -2,6 +2,8 @@ package com.pan.apientregas.messaging
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.pan.apientregas.constant.EXCHANGE_ENTREGA
+import com.pan.apientregas.constant.KEY_PROCESSA
+import com.pan.apientregas.constant.KEY_PROCESSADA
 import com.pan.apientregas.constant.QUEUE_ENTREGA_PROCESSADA
 import com.pan.apientregas.constant.QUEUE_PROCESSA_ENTREGA
 import org.springframework.amqp.core.Binding
@@ -24,16 +26,20 @@ class RabbitMQConfig {
     }
 
     @Bean
-    fun createCompraQueue() : Queue?{
-        return Queue(QUEUE_PROCESSA_ENTREGA, true)
+    fun processaBinding() : Binding {
+        return BindingBuilder
+            .bind(processaQueue())
+            .to(entregaExchange())
+            .with(KEY_PROCESSA)
+            .noargs()
     }
 
     @Bean
-    fun entregaModelBinding() : Binding {
+    fun processadaBinding() : Binding {
         return BindingBuilder
-            .bind(entregaModelQueue())
+            .bind(processadaQueue())
             .to(entregaExchange())
-            .with("")
+            .with(KEY_PROCESSADA)
             .noargs()
     }
 
@@ -46,9 +52,14 @@ class RabbitMQConfig {
     }
 
     @Bean
-    fun entregaModelQueue() : Queue {
+    fun processadaQueue() : Queue {
         return QueueBuilder
             .durable(QUEUE_ENTREGA_PROCESSADA)
             .build()
+    }
+
+    @Bean
+    fun processaQueue() : Queue?{
+        return Queue(QUEUE_PROCESSA_ENTREGA, true)
     }
 }
