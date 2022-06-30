@@ -37,6 +37,8 @@ dependencies {
 	testImplementation ("org.springframework.boot:spring-boot-starter-test")
 	testImplementation ("org.springframework.amqp:spring-rabbit-test")
 	implementation("com.google.code.gson:gson:2.9.0")
+	implementation("org.flywaydb:flyway-core:8.5.12")
+
 }
 
 kapt {
