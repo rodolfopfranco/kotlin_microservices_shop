@@ -25,6 +25,11 @@ dependencies {
 	testImplementation ("org.springframework.boot:spring-boot-starter-test")
 	implementation("io.springfox:springfox-swagger-ui:2.9.2")
 	implementation("io.springfox:springfox-swagger2:2.9.2")
+	implementation ("org.springframework.boot:spring-boot-starter-amqp")
+	testImplementation ("org.springframework.boot:spring-boot-starter-test")
+	testImplementation ("org.springframework.amqp:spring-rabbit-test")
+	implementation("com.google.code.gson:gson:2.9.0")
+
 }
 
 tasks.withType<KotlinCompile> {

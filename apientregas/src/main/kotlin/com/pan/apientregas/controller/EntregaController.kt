@@ -1,6 +1,7 @@
 package com.pan.apientregas.controller
 
 import com.pan.apientregas.document.Entrega
+import com.pan.apientregas.messaging.RabbitMQService
 import com.pan.apientregas.service.EntregaService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.ResponseEntity
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1/deliveries")
 class EntregaController(
-    private val entregaService: EntregaService
+    private val entregaService: EntregaService,
+    private val rabbitMQService: RabbitMQService
 ) {
     @ApiOperation(value = "Retrieve every delivery on the database")
     @GetMapping
@@ -28,10 +30,13 @@ class EntregaController(
         return ResponseEntity.ok(entregaService.encontrarPorId(id))
     }
 
-    @ApiOperation(value = "Saves a new Delivery")
+    @ApiOperation(value = "Creates a new Delivery")
     @PostMapping
     fun salvarEntrega(@RequestBody request: Entrega): ResponseEntity<Entrega> {
-        return ResponseEntity.ok(entregaService.salvarEntrega(request))
+        val entregaSalva = entregaService.salvarEntrega(request)
+        rabbitMQService.enviaEntrega(entregaSalva)
+        println(entregaSalva)
+        return ResponseEntity.ok(entregaSalva)
     }
 
     @ApiOperation(value = "Updates a new Delivery")
