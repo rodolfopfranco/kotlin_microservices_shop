@@ -40,6 +40,6 @@ class RabbitMQService(
     fun enviaEntregaDeVoltaComStatusAtualizado(entrega: Entrega){
         val mapper = jacksonObjectMapper()
         val message = mapper.writeValueAsString(entrega)
-        rabbitTemplate.convertAndSend(EXCHANGE_ENTREGA,"", message)
+        rabbitTemplate.convertAndSend(EXCHANGE_ENTREGA,KEY_PROCESSADA, message)
     }
 }

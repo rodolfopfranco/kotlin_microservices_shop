@@ -21,16 +21,20 @@ class RabbitMQConfig {
     }
 
     @Bean
-    fun createCompraQueue() : Queue?{
-        return Queue(QUEUE_ENTREGA_PROCESSADA, true)
+    fun processaBinding() : Binding {
+        return BindingBuilder
+            .bind(processaQueue())
+            .to(entregaExchange())
+            .with(KEY_PROCESSA)
+            .noargs()
     }
 
     @Bean
-    fun entregaModelBinding() : Binding {
+    fun processadaBinding() : Binding {
         return BindingBuilder
-            .bind(entregaModelQueue())
+            .bind(processadaQueue())
             .to(entregaExchange())
-            .with("")
+            .with(KEY_PROCESSADA)
             .noargs()
     }
 
@@ -43,9 +47,14 @@ class RabbitMQConfig {
     }
 
     @Bean
-    fun entregaModelQueue() : Queue {
+    fun processadaQueue() : Queue {
         return QueueBuilder
-            .durable(QUEUE_PROCESSA_ENTREGA)
+            .durable(QUEUE_ENTREGA_PROCESSADA)
             .build()
+    }
+
+    @Bean
+    fun processaQueue() : Queue?{
+        return Queue(QUEUE_PROCESSA_ENTREGA, true)
     }
 }
