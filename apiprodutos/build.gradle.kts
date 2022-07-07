@@ -22,23 +22,29 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	// Validation:
+	implementation("org.springframework.boot:spring-boot-starter-validation:2.7.0")
+	// JPA, MySQL and H2 Database:
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	runtimeOnly("mysql:mysql-connector-java")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	runtimeOnly("com.h2database:h2")
 	testRuntimeOnly("com.h2database:h2")
-	implementation("org.springframework.boot:spring-boot-starter-validation:2.7.0")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	// Mapstruct DTO mapping:
 	compileOnly("org.mapstruct:mapstruct:1.5.1.Final")
 	kapt("org.mapstruct:mapstruct-processor:1.5.1.Final")
-	kapt("org.mapstruct:mapstruct-processor:1.5.1.Final")
+	// Swagger documentation:
 	implementation("io.springfox:springfox-swagger-ui:2.9.2")
 	implementation("io.springfox:springfox-swagger2:2.9.2")
+	// Rabbit MQ Messaging:
 	implementation ("org.springframework.boot:spring-boot-starter-amqp")
+	// Flyway DB Migration:
+	implementation("org.flywaydb:flyway-core:8.5.12")
+	// Tests:
+	testImplementation("com.github.tomakehurst:wiremock:2.27.2")
 	testImplementation ("org.springframework.boot:spring-boot-starter-test")
 	testImplementation ("org.springframework.amqp:spring-rabbit-test")
-	implementation("com.google.code.gson:gson:2.9.0")
-	implementation("org.flywaydb:flyway-core:8.5.12")
-
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.cloud:spring-cloud-starter-contract-stub-runner")
 }
 
 kapt {
