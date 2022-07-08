@@ -42,5 +42,14 @@ class ProductComponent {
                 descricao = "Descrição do ativo",
                 isActive = true
             )
+
+        fun createAList() = listOf<Produto>(
+            createActiveProduct(),
+            createActiveProduct(),
+            createActiveProduct(),
+            createInactiveProduct(),
+            createInactiveProduct(),
+            createInactiveProduct()
+        )
     }
 }
