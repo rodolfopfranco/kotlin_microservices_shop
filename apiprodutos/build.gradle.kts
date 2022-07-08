@@ -44,7 +44,8 @@ dependencies {
 	testImplementation ("org.springframework.boot:spring-boot-starter-test")
 	testImplementation ("org.springframework.amqp:spring-rabbit-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.cloud:spring-cloud-starter-contract-stub-runner")
+	//testImplementation("org.springframework.cloud:spring-cloud-starter-contract-stub-runner")
+	testImplementation("io.mockk:mockk:1.12.4")
 }
 
 kapt {
