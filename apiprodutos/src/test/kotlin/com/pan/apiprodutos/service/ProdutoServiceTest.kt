@@ -2,11 +2,15 @@ package com.pan.apiprodutos.service
 
 import com.pan.apiprodutos.component.ProductComponent
 import com.pan.apiprodutos.component.ProductRequestComponent
+import com.pan.apiprodutos.component.ProdutoEnviadoComponent
 import com.pan.apiprodutos.dto.mapper.ProdutoMapper
 import com.pan.apiprodutos.dto.mapper.ProdutoMapperImpl
+import com.pan.apiprodutos.dto.request.ProdutoEnviado
 import com.pan.apiprodutos.exception.ResourceException
 import com.pan.apiprodutos.repository.ProdutoRepository
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -16,6 +20,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpStatus
+import java.math.BigDecimal
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -168,7 +173,7 @@ class ProdutoServiceTest {
         produtoInativo.isActive = false
         `when`(produtoRepository.save(produtoAtivo)).thenReturn(produtoInativo)
 
-        val produtoInativado = produtoService.ativar(1)
+        val produtoInativado = produtoService.desativar(1)
 
         assertEquals(produtoInativo, produtoInativado)
     }
@@ -180,6 +185,79 @@ class ProdutoServiceTest {
             .thenReturn(Optional.of(produtoInativo))
 
         assertThrows<ResourceException> { produtoService.desativar(1) }
+    }
+
+    @Test
+    fun `Should reduce Product qnt on database`(){
+        val produto = ProductComponent.createActiveProduct()
+        val qtdParaReduzir = BigDecimal(1.0)
+        val produtoEsperado = ProductComponent.createActiveProduct()
+        produtoEsperado.quantidade = produtoEsperado.quantidade.subtract(qtdParaReduzir)
+
+        `when`(produtoRepository.save(produtoEsperado))
+            .thenReturn(produtoEsperado)
+
+        val produtoReduzido = produtoService.reduzirEstoqueDoProduto(produto, qtdParaReduzir)
+        assertEquals(produtoEsperado, produtoReduzido)
+    }
+
+    @Test
+    fun`Should return false if a product have no stock`(){
+        val produto = ProductComponent.createActiveProduct()
+        val qtdParaReduzir = BigDecimal(999)
+
+        `when`(produtoRepository.findById(1)).thenReturn(Optional.of(produto))
+        assertFalse(produtoService.verificaEstoqueDoProduto(produto, qtdParaReduzir))
+    }
+
+    @Test
+    fun`Should return true if a product has stock`(){
+        val produto = ProductComponent.createActiveProduct()
+        val qtdParaReduzir = BigDecimal(1)
+
+        `when`(produtoRepository.findById(1)).thenReturn(Optional.of(produto))
+        assertTrue(produtoService.verificaEstoqueDoProduto(produto, qtdParaReduzir))
+    }
+
+    @Test
+    fun `Should return true after verifying avialiable stock for a list of products`(){
+        val produtoEncontrado = ProductComponent.createActiveProduct()
+        val listaDeProdutosEnviados = ProdutoEnviadoComponent.createListWithFewItens()
+        `when`(produtoRepository.findById(1)).thenReturn(Optional.of(produtoEncontrado))
+        assertTrue(produtoService.verificaSeTemEstoqueParaPedido(listaDeProdutosEnviados))
+    }
+
+    @Test
+    fun `Should return false after verifying itens with no stock for a list of products`(){
+        val produtoEncontrado = ProductComponent.createActiveProduct()
+        val listaDeProdutosEnviados = ProdutoEnviadoComponent.createListWithManyItens()
+        `when`(produtoRepository.findById(2)).thenReturn(Optional.of(produtoEncontrado))
+        `when`(produtoRepository.findById(1)).thenReturn(Optional.of(produtoEncontrado))
+        assertFalse(produtoService.verificaSeTemEstoqueParaPedido(listaDeProdutosEnviados))
+    }
+
+    @Test
+    fun `Should throw ResourceException for an product which doesnt exists on DB`(){
+        val listaDeProdutosEnviados = ProdutoEnviadoComponent.createListWithManyItens()
+        assertFalse(produtoService.verificaSeTemEstoqueParaPedido(listaDeProdutosEnviados))
+    }
+
+    @Test
+    fun `Should return true when a list with product in stock is succefully reduced`(){
+        val listaDeProdutosParaReduzir = ProdutoEnviadoComponent.createListWithFewItens()
+        val produtoEncontrado = ProductComponent.createActiveProduct()
+        `when`(produtoRepository.findById(1)).thenReturn(Optional.of(produtoEncontrado))
+        `when`(produtoRepository.save(produtoEncontrado))
+            .thenReturn(produtoEncontrado)
+        assertTrue(produtoService.reduzirEstoqueParaListaDeProdutos(listaDeProdutosParaReduzir))
+    }
+
+    @Test
+    fun `Should return false when a list with product without stock is succefully reduced`(){
+        val listaDeProdutosParaReduzir = ProdutoEnviadoComponent.createListWithManyItens()
+        val produtoEncontrado = ProductComponent.createActiveProduct()
+        `when`(produtoRepository.findById(2)).thenReturn(Optional.of(produtoEncontrado))
+        assertFalse(produtoService.reduzirEstoqueParaListaDeProdutos(listaDeProdutosParaReduzir))
     }
 
 }
