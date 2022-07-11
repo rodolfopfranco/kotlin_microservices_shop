@@ -1,4 +1,4 @@
-package com.pan.apiprodutos.controller
+package com.pan.apiprodutos.service
 
 import com.pan.apiprodutos.component.ProductComponent
 import com.pan.apiprodutos.component.ProductRequestComponent
@@ -6,16 +6,16 @@ import com.pan.apiprodutos.dto.mapper.ProdutoMapper
 import com.pan.apiprodutos.dto.mapper.ProdutoMapperImpl
 import com.pan.apiprodutos.exception.ResourceException
 import com.pan.apiprodutos.repository.ProdutoRepository
-import com.pan.apiprodutos.service.ProdutoService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
-import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.http.HttpStatus
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -119,10 +119,67 @@ class ProdutoServiceTest {
     }
 
     @Test
-    fun `Should remove the product with given ID`(){
-        // Discover how to test void methods
-        doNothing(). `when`(produtoRepository.deleteById(1))
-        produtoService.removerProduto(1)
+    fun `Should throw exception when delete by Id does not work`(){
+        `when`(produtoRepository.findById(1))
+            .thenReturn(Optional.of(ProductComponent.createActiveProduct()))
+        `when`(produtoRepository.deleteById(1)).thenThrow(ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, ""))
+
+        assertThrows<ResourceException> { produtoService.removerProduto(1) }
+    }
+
+    @Test
+    fun `Should do nothing when remove by ID works`(){
+        `when`(produtoRepository.findById(1))
+            .thenReturn(Optional.of(ProductComponent.createActiveProduct()))
+
+        assertDoesNotThrow { produtoService.removerProduto(1) }
+    }
+
+    @Test
+    fun `Should activate inactive Product`(){
+        val produtoInativo = ProductComponent.createInactiveProduct()
+        `when`(produtoRepository.findById(1))
+            .thenReturn(Optional.of(produtoInativo))
+        val produtoAtivo = produtoInativo.copy()
+        produtoAtivo.isActive = true
+        `when`(produtoRepository.save(produtoInativo)).thenReturn(produtoAtivo)
+
+        val produtoAtivado = produtoService.ativar(1)
+
+        assertEquals(produtoAtivo, produtoAtivado)
+    }
+
+    @Test
+    fun `Should throw Exception when trying to activate already active Product`(){
+        val produtoAtivo = ProductComponent.createActiveProduct()
+        `when`(produtoRepository.findById(1))
+            .thenReturn(Optional.of(produtoAtivo))
+
+        assertThrows<ResourceException> { produtoService.ativar(1) }
+    }
+
+    @Test
+    fun `Should inactivate active Product`(){
+        val produtoAtivo = ProductComponent.createActiveProduct()
+        `when`(produtoRepository.findById(1))
+            .thenReturn(Optional.of(produtoAtivo))
+
+        val produtoInativo = produtoAtivo.copy()
+        produtoInativo.isActive = false
+        `when`(produtoRepository.save(produtoAtivo)).thenReturn(produtoInativo)
+
+        val produtoInativado = produtoService.ativar(1)
+
+        assertEquals(produtoInativo, produtoInativado)
+    }
+
+    @Test
+    fun `Should throw Exception when trying to inactivate already inactive Product`(){
+        val produtoInativo = ProductComponent.createInactiveProduct()
+        `when`(produtoRepository.findById(1))
+            .thenReturn(Optional.of(produtoInativo))
+
+        assertThrows<ResourceException> { produtoService.desativar(1) }
     }
 
 }

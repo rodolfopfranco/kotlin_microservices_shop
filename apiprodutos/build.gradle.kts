@@ -1,3 +1,4 @@
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -40,10 +41,12 @@ dependencies {
 	// Flyway DB Migration:
 	implementation("org.flywaydb:flyway-core:8.5.12")
 	// Tests:
+	implementation("com.google.code.gson:gson:2.9.0")
 	testImplementation("com.github.tomakehurst:wiremock:2.27.2")
 	testImplementation ("org.springframework.boot:spring-boot-starter-test")
 	testImplementation ("org.springframework.amqp:spring-rabbit-test")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.junit.jupiter:junit-jupiter-api")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	//testImplementation("org.springframework.cloud:spring-cloud-starter-contract-stub-runner")
 	testImplementation("io.mockk:mockk:1.12.4")
 }

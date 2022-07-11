@@ -39,7 +39,7 @@ class ProductComponent {
                 nome = "Produto ativo",
                 quantidade = BigDecimal("1.0"),
                 valor_unitario = BigDecimal("2.0"),
-                descricao = "Descrição do ativo",
+                descricao = "Descricao do ativo",
                 isActive = true
             )
 
