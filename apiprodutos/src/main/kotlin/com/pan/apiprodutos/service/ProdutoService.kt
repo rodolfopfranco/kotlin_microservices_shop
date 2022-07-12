@@ -83,7 +83,6 @@ class ProdutoService(
                 if (!verificaEstoqueDoProduto(produtoAtual, produtoEnviado.qtd))
                     return false
             } catch (re: ResourceException){
-                println(re.message)
                 return false
             }
         }
@@ -93,6 +92,6 @@ class ProdutoService(
     fun verificaEstoqueDoProduto(produto:Produto, quantidadeParaReduzir: BigDecimal): Boolean {
         val produtoEncontrado = encontrarPorId(produto.id!!)
         val quantidadeFinal = produtoEncontrado.quantidade.subtract(quantidadeParaReduzir)
-        return (quantidadeFinal.compareTo(BigDecimal(0))>0)
+        return (quantidadeFinal.compareTo(BigDecimal(0))>=0)
     }
 }
