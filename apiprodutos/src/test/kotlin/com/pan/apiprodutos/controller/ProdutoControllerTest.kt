@@ -139,5 +139,21 @@ class ProdutoControllerTest(
         assertEquals(produtoExperado, produtoSalvo)
     }
 
+    @Test
+    fun `Should catch and return Exception for not found product while updating it`(){
+        val produtoRequest = ProductRequestComponent.createBasicActive()
+        val objectMapper = ObjectMapper()
+        val json: String = objectMapper.writeValueAsString(produtoRequest)
+        val excecaoExperada = ResourceException(HttpStatus.NOT_FOUND, "Produto não encontrado")
+        every { produtoService.atualizarProduto(any(), 1) } throws excecaoExperada
+
+        val result = mockMvc.perform(
+            patch("/api/v1/products/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andExpect(status().isNotFound)
+            .andExpect {result -> assertTrue(result.resolvedException is ResourceException)}
+            .andExpect{result -> assertEquals("Produto não encontrado", result.resolvedException?.message) }
+    }
 
 }
