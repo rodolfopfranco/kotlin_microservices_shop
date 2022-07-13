@@ -1,0 +1,10 @@
+package com.pan.mib.feign.exceptions
+
+import org.springframework.http.HttpStatus
+
+class ResourceException(httpStatus: HttpStatus, message: String?) : RuntimeException(message) {
+    var httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
+    init {
+        this.httpStatus = httpStatus
+    }
+}
