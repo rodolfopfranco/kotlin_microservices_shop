@@ -31,27 +31,25 @@ class UsuarioController(
 
     @ApiOperation(value = "Find a User by its ID")
     @GetMapping("/{id}")
-    fun buscarUsuarioPorId(@PathVariable id: Int){
-        usuarioService.encontrarPorId(id)
-    }
+    fun buscarUsuarioPorId(@PathVariable id: Int) =
+        ResponseEntity.ok(usuarioService.encontrarPorId(id))
 
     @ApiOperation(value = "Saves a new User")
     @PostMapping
-    fun salvarUsuario(@RequestBody request: UsuarioRequest){
-        usuarioService.salvarUsuario(request)
-    }
+    fun salvarUsuario(@RequestBody request: UsuarioRequest) =
+        ResponseEntity.ok(usuarioService.salvarUsuario(request))
+
 
     @ApiOperation(value = "Updates a new User")
     @PatchMapping("/{id}")
-    fun atualizarUsuario(@RequestBody request: UsuarioRequest, @PathVariable id:Int){
-        usuarioService.atualizarUsuario(request, id)
-    }
+    fun atualizarUsuario(@RequestBody request: UsuarioRequest, @PathVariable id:Int) =
+        ResponseEntity.ok(usuarioService.atualizarUsuario(request, id))
+
 
     @ApiOperation(value = "Removes a User by its ID")
     @DeleteMapping("/{id}")
-    fun removerUsuario(@PathVariable id: Int){
+    fun removerUsuario(@PathVariable id: Int) =
         usuarioService.removerUsuario(id)
-    }
 
     @PostMapping("/login")
     @ApiOperation(value = "Authenticates User")
